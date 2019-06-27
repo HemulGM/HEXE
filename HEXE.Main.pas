@@ -5,7 +5,8 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Grids, System.UITypes,
-  Vcl.ComCtrls, HGM.Controls.SpinEdit;
+  Vcl.ComCtrls, HGM.Controls.SpinEdit, HGM.Popup, Vcl.Buttons, sSpeedButton,
+  HGM.Button, System.ImageList, Vcl.ImgList, PngImageList;
 
 type
   TCodePage = (cpUTF, cpAnsi, cpOEM, cpMac, cpEBCDIC);
@@ -13,19 +14,70 @@ type
   TNumFormat = (nfHEX, nfDEC, nfOCT);
 
   TFormMain = class(TForm)
-    Panel1: TPanel;
-    Button1: TButton;
     ScrollBoxMain: TScrollBox;
     ScrollBarEditor: TScrollBar;
     StringGridEditor: TStringGrid;
     PanelEditor: TPanel;
     MemoChars: TRichEdit;
     FileOpenDialog: TFileOpenDialog;
-    ComboBoxCodePage: TComboBox;
-    EditAddr: TEdit;
-    ButtonGoToAddr: TButton;
+    PanelMenu: TPanel;
+    PanelMenuNavigate: TPanel;
+    ButtonFlatMenuSearch: TButtonFlat;
+    ButtonFlatMenuHelp: TButtonFlat;
+    ButtonFlatMenuStart: TButtonFlat;
+    ButtonFlatMenuFile: TButtonFlat;
+    PanelMenuPages: TPanel;
+    Shape4: TShape;
+    Shape11: TShape;
+    PageControlMenu: TPageControl;
+    TabSheetMenuStart: TTabSheet;
+    Shape5: TShape;
+    PanelBarTasks: TPanel;
+    Shape1: TShape;
+    Panel32: TPanel;
+    TabSheetMenuSearch: TTabSheet;
+    Shape23: TShape;
+    PanelBarSerach: TPanel;
+    Panel24: TPanel;
+    Panel30: TPanel;
+    TabSheetMenuHelp: TTabSheet;
+    Shape24: TShape;
+    PanelBarHelp: TPanel;
+    SpeedButtonMenuInfo: TsSpeedButton;
+    Shape20: TShape;
+    Panel62: TPanel;
+    Panel63: TPanel;
+    SpeedButtonMenuFutures: TsSpeedButton;
+    SpeedButtonMenuAutor: TsSpeedButton;
+    PanelMenuFile: TPanel;
+    Shape25: TShape;
+    Shape26: TShape;
+    Shape32: TShape;
+    Panel65: TPanel;
+    Shape21: TShape;
+    Shape30: TShape;
+    ButtonFlatOpen: TButtonFlat;
+    ButtonFlatMenuQuit: TButtonFlat;
+    Panel66: TPanel;
+    Shape31: TShape;
+    Panel69: TPanel;
+    ListViewRecent: TListView;
+    Panel67: TPanel;
+    Shape22: TShape;
+    Shape33: TShape;
+    Shape35: TShape;
+    Panel68: TPanel;
+    Shape34: TShape;
+    ButtonFlat17: TButtonFlat;
+    ButtonFlatMenuView: TButtonFlat;
+    TabSheetMenuView: TTabSheet;
+    ImageList32: TImageList;
     EditSearch: TEdit;
-    ButtonSearch: TButton;
+    ButtonSearch: TButtonFlat;
+    Shape3: TShape;
+    PanelBarSearchParam: TPanel;
+    Panel5: TPanel;
+    Panel6: TPanel;
     Panel3: TPanel;
     RadioButtonStrIgnor: TRadioButton;
     RadioButtonStr: TRadioButton;
@@ -33,8 +85,18 @@ type
     Panel4: TPanel;
     RadioButtonStartPos: TRadioButton;
     RadioButtonStartBegin: TRadioButton;
+    ButtonFlatOpenFile: TButtonFlat;
+    EditAddr: TEdit;
+    ButtonFlatGoTo: TButtonFlat;
+    Shape2: TShape;
+    PanelBarView: TPanel;
+    Panel7: TPanel;
+    Panel8: TPanel;
     SpinEditSize: TlkSpinEdit;
-    procedure Button1Click(Sender: TObject);
+    ComboBoxCodePage: TComboBox;
+    Label1: TLabel;
+    Label2: TLabel;
+    Shape6: TShape;
     procedure FormCreate(Sender: TObject);
     procedure StringGridEditorSelectCell(Sender: TObject; ACol, ARow: Integer;
       var CanSelect: Boolean);
@@ -63,9 +125,17 @@ type
     procedure StringGridEditorSetEditText(Sender: TObject; ACol, ARow: Integer;
       const Value: string);
     procedure ComboBoxCodePageChange(Sender: TObject);
-    procedure ButtonGoToAddrClick(Sender: TObject);
     procedure ButtonSearchClick(Sender: TObject);
     procedure SpinEditSizeChange(Sender: TObject);
+    procedure ButtonFlatMenuFileClick(Sender: TObject);
+    procedure ButtonFlat17Click(Sender: TObject);
+    procedure ButtonFlatMenuStartClick(Sender: TObject);
+    procedure ButtonFlatMenuViewClick(Sender: TObject);
+    procedure ButtonFlatMenuSearchClick(Sender: TObject);
+    procedure ButtonFlatMenuHelpClick(Sender: TObject);
+    procedure ButtonFlatOpenFileClick(Sender: TObject);
+    procedure ButtonFlatMenuQuitClick(Sender: TObject);
+    procedure ButtonFlatGoToClick(Sender: TObject);
   private
     FFileName: string;
     FGoToByte: Integer;
@@ -77,6 +147,10 @@ type
     fSize: Int64;
     MaxLineCount: Integer;
     StartByte: Int64;
+    FMenuFilePopup: TFormPopup;
+    procedure FreePopup;
+    procedure LoadLastItems;
+    procedure Navigate(Tab: TTabSheet);
     function GetHEXChar(Value: Byte): string;
     procedure FOpenFile(FileName: string);
     procedure UpdateParams;
@@ -104,12 +178,6 @@ uses Math;
 
 {$R *.dfm}
 
-procedure TFormMain.Button1Click(Sender: TObject);
-begin
-  if FileOpenDialog.Execute then  //'F:\Delphi XE10.3 Rio.rar'
-    FOpenFile(FileOpenDialog.FileName);
-end;
-
 function FileSize(FileName: string): Int64;
 var
   hFile: Integer;
@@ -129,7 +197,17 @@ begin
   FGoTo := False;
 end;
 
-procedure TFormMain.ButtonGoToAddrClick(Sender: TObject);
+procedure TFormMain.LoadLastItems;
+begin
+  //
+end;
+
+procedure TFormMain.ButtonFlat17Click(Sender: TObject);
+begin
+  Winapi.Windows.SetFocus(Handle);
+end;
+
+procedure TFormMain.ButtonFlatGoToClick(Sender: TObject);
 var Offset: Int64;
 begin
   try
@@ -141,6 +219,46 @@ begin
     end;
   end;
   GoToAddr(Offset);
+end;
+
+procedure TFormMain.ButtonFlatMenuFileClick(Sender: TObject);
+var
+  pt: TPoint;
+begin
+  pt := ButtonFlatMenuFile.ClientToScreen(Point(0, 0));
+  FMenuFilePopup := TFormPopup.CreatePopup(Self, PanelMenuFile, FreePopup, pt.X, pt.Y, False, True, False);
+  LoadLastItems;
+end;
+
+procedure TFormMain.ButtonFlatMenuHelpClick(Sender: TObject);
+begin
+  Navigate(TabSheetMenuHelp);
+end;
+
+procedure TFormMain.ButtonFlatMenuQuitClick(Sender: TObject);
+begin
+  Application.Terminate;
+end;
+
+procedure TFormMain.ButtonFlatMenuSearchClick(Sender: TObject);
+begin
+  Navigate(TabSheetMenuSearch);
+end;
+
+procedure TFormMain.ButtonFlatMenuStartClick(Sender: TObject);
+begin
+  Navigate(TabSheetMenuStart);
+end;
+
+procedure TFormMain.ButtonFlatMenuViewClick(Sender: TObject);
+begin
+  Navigate(TabSheetMenuView);
+end;
+
+procedure TFormMain.ButtonFlatOpenFileClick(Sender: TObject);
+begin
+  if FileOpenDialog.Execute then
+    FOpenFile(FileOpenDialog.FileName);
 end;
 
 procedure TFormMain.ButtonSearchClick(Sender: TObject);
@@ -189,11 +307,17 @@ begin
   FCodePage := cpAnsi;
   StringGridEditor.ColWidths[0] := 80;
   StringGridEditor.RowHeights[0] := 30;
+  Navigate(TabSheetMenuStart);
 end;
 
 procedure TFormMain.FormResize(Sender: TObject);
 begin
   UpdateParams;
+end;
+
+procedure TFormMain.FreePopup;
+begin
+  FMenuFilePopup := nil;
 end;
 
 function TFormMain.GetHEXChar(Value: Byte): string;
@@ -271,6 +395,26 @@ procedure TFormMain.MemoCharsMouseWheelUp(Sender: TObject; Shift: TShiftState;
 begin
   ScrollGrid(scLineUp);
   Handled := True;
+end;
+
+procedure TFormMain.Navigate(Tab: TTabSheet);
+
+  procedure SetMenuButtonActive(Button: TButtonFlat; Value: Boolean);
+  begin
+    case Value of
+      True:
+        Button.ColorNormal := $00F7F6F5;
+      False:
+        Button.ColorNormal := clWhite;
+    end;
+  end;
+
+begin
+  PageControlMenu.ActivePage := Tab;
+  SetMenuButtonActive(ButtonFlatMenuStart, PageControlMenu.ActivePage = TabSheetMenuStart);
+  SetMenuButtonActive(ButtonFlatMenuView, PageControlMenu.ActivePage = TabSheetMenuView);
+  SetMenuButtonActive(ButtonFlatMenuSearch, PageControlMenu.ActivePage = TabSheetMenuSearch);
+  SetMenuButtonActive(ButtonFlatMenuHelp, PageControlMenu.ActivePage = TabSheetMenuHelp);
 end;
 
 procedure TFormMain.UpdateView;
