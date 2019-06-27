@@ -14,8 +14,27 @@ object FormMain: TFormMain
   OldCreateOrder = False
   OnCreate = FormCreate
   OnResize = FormResize
+  DesignSize = (
+    1119
+    630)
   PixelsPerInch = 96
   TextHeight = 13
+  object LinkOpenFile: ThLink
+    Left = 560
+    Top = 336
+    Width = 79
+    Height = 13
+    Cursor = crHandPoint
+    Anchors = []
+    Caption = #1054#1090#1082#1088#1086#1081#1090#1077' '#1092#1072#1081#1083
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = 14194235
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    OnClick = ButtonFlatOpenFileClick
+  end
   object PanelEditor: TPanel
     Left = 0
     Top = 120
@@ -198,47 +217,8 @@ object FormMain: TFormMain
       Color = clWhite
       ParentBackground = False
       TabOrder = 0
-      object ButtonFlatMenuSearch: TButtonFlat
-        Left = 217
-        Top = 0
-        Width = 80
-        Height = 23
-        Align = alLeft
-        Caption = #1055#1086#1080#1089#1082
-        ColorNormal = clWhite
-        ColorOver = 16250613
-        ColorPressed = 15921390
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        FontOver.Charset = DEFAULT_CHARSET
-        FontOver.Color = clWindowText
-        FontOver.Height = -13
-        FontOver.Name = 'Tahoma'
-        FontOver.Style = []
-        FontDown.Charset = DEFAULT_CHARSET
-        FontDown.Color = clWindowText
-        FontDown.Height = -13
-        FontDown.Name = 'Tahoma'
-        FontDown.Style = []
-        IgnorBounds = True
-        ImageIndentLeft = 0
-        OnClick = ButtonFlatMenuSearchClick
-        RoundRectParam = 0
-        ShowFocusRect = False
-        TabOrder = 0
-        TabStop = True
-        TextFormat = [tfCenter, tfSingleLine, tfVerticalCenter]
-        SubTextFont.Charset = DEFAULT_CHARSET
-        SubTextFont.Color = clWhite
-        SubTextFont.Height = -13
-        SubTextFont.Name = 'Tahoma'
-        SubTextFont.Style = []
-      end
       object ButtonFlatMenuHelp: TButtonFlat
-        Left = 297
+        Left = 217
         Top = 0
         Width = 80
         Height = 23
@@ -267,7 +247,7 @@ object FormMain: TFormMain
         OnClick = ButtonFlatMenuHelpClick
         RoundRectParam = 0
         ShowFocusRect = False
-        TabOrder = 1
+        TabOrder = 0
         TabStop = True
         TextFormat = [tfCenter, tfSingleLine, tfVerticalCenter]
         SubTextFont.Charset = DEFAULT_CHARSET
@@ -275,6 +255,7 @@ object FormMain: TFormMain
         SubTextFont.Height = -13
         SubTextFont.Name = 'Tahoma'
         SubTextFont.Style = []
+        ExplicitLeft = 297
       end
       object ButtonFlatMenuStart: TButtonFlat
         Left = 57
@@ -306,7 +287,7 @@ object FormMain: TFormMain
         OnClick = ButtonFlatMenuStartClick
         RoundRectParam = 0
         ShowFocusRect = False
-        TabOrder = 2
+        TabOrder = 1
         TabStop = True
         TextFormat = [tfCenter, tfSingleLine, tfVerticalCenter]
         SubTextFont.Charset = DEFAULT_CHARSET
@@ -345,7 +326,7 @@ object FormMain: TFormMain
         OnClick = ButtonFlatMenuFileClick
         RoundRectParam = 0
         ShowFocusRect = False
-        TabOrder = 3
+        TabOrder = 2
         TabStop = True
         TextFormat = [tfCenter, tfSingleLine, tfVerticalCenter]
         SubTextFont.Charset = DEFAULT_CHARSET
@@ -384,7 +365,7 @@ object FormMain: TFormMain
         OnClick = ButtonFlatMenuViewClick
         RoundRectParam = 0
         ShowFocusRect = False
-        TabOrder = 4
+        TabOrder = 3
         TabStop = True
         TextFormat = [tfCenter, tfSingleLine, tfVerticalCenter]
         SubTextFont.Charset = DEFAULT_CHARSET
@@ -431,16 +412,66 @@ object FormMain: TFormMain
         Top = 1
         Width = 1119
         Height = 95
-        ActivePage = TabSheetMenuSearch
+        ActivePage = TabSheetMenuStart
         Align = alClient
         Style = tsFlatButtons
         TabOrder = 0
         object TabSheetMenuStart: TTabSheet
           Caption = #1053#1072#1095#1072#1090#1100
           TabVisible = False
+          ExplicitLeft = -508
+          ExplicitTop = 9
           object Shape5: TShape
             AlignWithMargins = True
-            Left = 453
+            Left = 138
+            Top = 0
+            Width = 1
+            Height = 85
+            Margins.Left = 5
+            Margins.Top = 0
+            Margins.Right = 5
+            Margins.Bottom = 0
+            Align = alLeft
+            Brush.Color = 15000546
+            Pen.Color = 15000546
+            ExplicitLeft = 127
+            ExplicitTop = 1
+          end
+          object Shape1: TShape
+            AlignWithMargins = True
+            Left = 716
+            Top = 0
+            Width = 1
+            Height = 85
+            Margins.Left = 5
+            Margins.Top = 0
+            Margins.Right = 5
+            Margins.Bottom = 0
+            Align = alLeft
+            Brush.Color = 15000546
+            Pen.Color = 15000546
+            ExplicitLeft = 711
+            ExplicitTop = 3
+          end
+          object Shape23: TShape
+            AlignWithMargins = True
+            Left = 476
+            Top = 0
+            Width = 1
+            Height = 85
+            Margins.Left = 5
+            Margins.Top = 0
+            Margins.Right = 5
+            Margins.Bottom = 0
+            Align = alLeft
+            Brush.Color = 15000546
+            Pen.Color = 15000546
+            ExplicitLeft = 473
+            ExplicitTop = 2
+          end
+          object Shape3: TShape
+            AlignWithMargins = True
+            Left = 956
             Top = 0
             Width = 1
             Height = 85
@@ -458,7 +489,7 @@ object FormMain: TFormMain
           object PanelBarTasks: TPanel
             Left = 0
             Top = 0
-            Width = 448
+            Width = 133
             Height = 85
             Margins.Left = 2
             Margins.Top = 2
@@ -467,27 +498,12 @@ object FormMain: TFormMain
             Align = alLeft
             BevelOuter = bvNone
             TabOrder = 0
-            object Shape1: TShape
-              AlignWithMargins = True
-              Left = 135
-              Top = 0
-              Width = 1
-              Height = 72
-              Margins.Left = 5
-              Margins.Top = 0
-              Margins.Right = 5
-              Margins.Bottom = 0
-              Align = alLeft
-              Brush.Color = 15000546
-              Pen.Color = 15000546
-              ExplicitLeft = 58
-              ExplicitTop = 3
-              ExplicitHeight = 67
-            end
+            ExplicitLeft = -71
+            ExplicitTop = -2
             object Panel32: TPanel
               Left = 0
               Top = 72
-              Width = 448
+              Width = 133
               Height = 13
               Align = alBottom
               BevelOuter = bvNone
@@ -500,6 +516,7 @@ object FormMain: TFormMain
               Font.Style = []
               ParentFont = False
               TabOrder = 0
+              ExplicitWidth = 448
             end
             object ButtonFlatOpenFile: TButtonFlat
               AlignWithMargins = True
@@ -547,114 +564,11 @@ object FormMain: TFormMain
               ExplicitLeft = -19
               ExplicitTop = 0
             end
-            object EditAddr: TEdit
-              AlignWithMargins = True
-              Left = 144
-              Top = 20
-              Width = 201
-              Height = 32
-              Margins.Top = 20
-              Margins.Bottom = 20
-              Align = alLeft
-              BevelInner = bvNone
-              BevelKind = bkSoft
-              BevelOuter = bvSpace
-              BevelWidth = 3
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clWindowText
-              Font.Height = -16
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              ParentFont = False
-              TabOrder = 2
-              Text = '6FE59316B'
-            end
-            object ButtonFlatGoTo: TButtonFlat
-              AlignWithMargins = True
-              Left = 351
-              Top = 20
-              Width = 94
-              Height = 32
-              Cursor = crDefault
-              Margins.Top = 20
-              Margins.Bottom = 20
-              Align = alLeft
-              Caption = #1055#1077#1088#1077#1081#1090#1080
-              ColorNormal = 16645371
-              ColorOver = 16577773
-              ColorPressed = 16444898
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clWindowText
-              Font.Height = -13
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              Flat = False
-              FontOver.Charset = DEFAULT_CHARSET
-              FontOver.Color = clWindowText
-              FontOver.Height = -13
-              FontOver.Name = 'Tahoma'
-              FontOver.Style = []
-              FontDown.Charset = DEFAULT_CHARSET
-              FontDown.Color = clWindowText
-              FontDown.Height = -13
-              FontDown.Name = 'Tahoma'
-              FontDown.Style = []
-              IgnorBounds = True
-              OnClick = ButtonFlatGoToClick
-              RoundRectParam = 0
-              ShowFocusRect = False
-              TabOrder = 3
-              TabStop = True
-              TextFormat = [tfCenter, tfSingleLine, tfVerticalCenter]
-              SubTextFont.Charset = DEFAULT_CHARSET
-              SubTextFont.Color = clWhite
-              SubTextFont.Height = -13
-              SubTextFont.Name = 'Tahoma'
-              SubTextFont.Style = []
-              ExplicitLeft = 299
-            end
-          end
-        end
-        object TabSheetMenuSearch: TTabSheet
-          Caption = #1053#1072#1089#1090#1088#1086#1081#1082#1080
-          ImageIndex = 4
-          TabVisible = False
-          object Shape23: TShape
-            AlignWithMargins = True
-            Left = 574
-            Top = 0
-            Width = 1
-            Height = 85
-            Margins.Left = 5
-            Margins.Top = 0
-            Margins.Right = 5
-            Margins.Bottom = 0
-            Align = alLeft
-            Brush.Color = 15000546
-            Pen.Color = 15000546
-            ExplicitLeft = 649
-            ExplicitTop = 2
-          end
-          object Shape3: TShape
-            AlignWithMargins = True
-            Left = 334
-            Top = 0
-            Width = 1
-            Height = 85
-            Margins.Left = 5
-            Margins.Top = 0
-            Margins.Right = 5
-            Margins.Bottom = 0
-            Align = alLeft
-            Brush.Color = 15000546
-            Pen.Color = 15000546
-            ExplicitLeft = 349
-            ExplicitHeight = 83
           end
           object PanelBarSerach: TPanel
-            Left = 0
+            Left = 144
             Top = 0
-            Width = 329
+            Width = 327
             Height = 85
             Margins.Left = 2
             Margins.Top = 2
@@ -662,11 +576,11 @@ object FormMain: TFormMain
             Margins.Bottom = 2
             Align = alLeft
             BevelOuter = bvNone
-            TabOrder = 0
+            TabOrder = 1
             object Panel24: TPanel
               Left = 0
               Top = 72
-              Width = 329
+              Width = 327
               Height = 13
               Align = alBottom
               BevelOuter = bvNone
@@ -679,24 +593,26 @@ object FormMain: TFormMain
               Font.Style = []
               ParentFont = False
               TabOrder = 0
+              ExplicitWidth = 329
             end
             object Panel30: TPanel
               Left = 0
               Top = 0
-              Width = 329
+              Width = 327
               Height = 72
               Align = alClient
               BevelOuter = bvNone
               TabOrder = 1
+              ExplicitWidth = 329
               object EditSearch: TEdit
                 AlignWithMargins = True
                 Left = 10
                 Top = 20
                 Width = 230
-                Height = 32
+                Height = 30
                 Margins.Left = 10
                 Margins.Top = 20
-                Margins.Bottom = 20
+                Margins.Bottom = 22
                 Align = alLeft
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
@@ -713,10 +629,10 @@ object FormMain: TFormMain
                 Left = 246
                 Top = 20
                 Width = 75
-                Height = 32
+                Height = 30
                 Cursor = crDefault
                 Margins.Top = 20
-                Margins.Bottom = 20
+                Margins.Bottom = 22
                 Align = alLeft
                 Caption = #1055#1086#1080#1089#1082
                 ColorNormal = 16645371
@@ -750,13 +666,36 @@ object FormMain: TFormMain
                 SubTextFont.Height = -13
                 SubTextFont.Name = 'Tahoma'
                 SubTextFont.Style = []
-                ExplicitTop = 24
-                ExplicitHeight = 24
+                ExplicitHeight = 32
+              end
+              object RadioButtonSearchData: TRadioButton
+                AlignWithMargins = True
+                Left = 14
+                Top = 52
+                Width = 67
+                Height = 20
+                Margins.Top = 2
+                Margins.Bottom = 2
+                Caption = #1076#1072#1085#1085#1099#1077
+                Checked = True
+                TabOrder = 2
+                TabStop = True
+              end
+              object RadioButtonSearchAddr: TRadioButton
+                AlignWithMargins = True
+                Left = 79
+                Top = 52
+                Width = 56
+                Height = 20
+                Margins.Top = 2
+                Margins.Bottom = 2
+                Caption = #1072#1076#1088#1077#1089
+                TabOrder = 3
               end
             end
           end
           object PanelBarSearchParam: TPanel
-            Left = 340
+            Left = 482
             Top = 0
             Width = 229
             Height = 85
@@ -766,7 +705,8 @@ object FormMain: TFormMain
             Margins.Bottom = 2
             Align = alLeft
             BevelOuter = bvNone
-            TabOrder = 1
+            TabOrder = 2
+            ExplicitLeft = 340
             object Panel5: TPanel
               Left = 0
               Top = 72
@@ -795,14 +735,15 @@ object FormMain: TFormMain
               object Panel3: TPanel
                 AlignWithMargins = True
                 Left = 3
-                Top = 10
+                Top = 0
                 Width = 223
                 Height = 25
-                Margins.Top = 10
+                Margins.Top = 0
                 Align = alTop
                 BevelKind = bkFlat
                 BevelOuter = bvNone
                 TabOrder = 0
+                ExplicitTop = 10
                 object RadioButtonStrIgnor: TRadioButton
                   AlignWithMargins = True
                   Left = 58
@@ -845,7 +786,7 @@ object FormMain: TFormMain
               object Panel4: TPanel
                 AlignWithMargins = True
                 Left = 3
-                Top = 41
+                Top = 31
                 Width = 223
                 Height = 25
                 Margins.Bottom = 10
@@ -853,6 +794,7 @@ object FormMain: TFormMain
                 BevelKind = bkFlat
                 BevelOuter = bvNone
                 TabOrder = 1
+                ExplicitTop = 41
                 object RadioButtonStartPos: TRadioButton
                   AlignWithMargins = True
                   Left = 71
@@ -878,6 +820,352 @@ object FormMain: TFormMain
                   Align = alLeft
                   Caption = #1089' '#1085#1072#1095#1072#1083#1072
                   TabOrder = 1
+                end
+              end
+            end
+          end
+          object PanelBarTools: TPanel
+            Left = 722
+            Top = 0
+            Width = 229
+            Height = 85
+            Margins.Left = 2
+            Margins.Top = 2
+            Margins.Right = 2
+            Margins.Bottom = 2
+            Align = alLeft
+            BevelOuter = bvNone
+            TabOrder = 3
+            ExplicitLeft = 906
+            ExplicitTop = -18
+            object Panel14: TPanel
+              Left = 0
+              Top = 72
+              Width = 229
+              Height = 13
+              Align = alBottom
+              BevelOuter = bvNone
+              Caption = 'HEX <-> DEC'
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clGray
+              Font.Height = -11
+              Font.Name = 'Tahoma'
+              Font.Pitch = fpFixed
+              Font.Style = []
+              ParentFont = False
+              TabOrder = 0
+            end
+            object Panel15: TPanel
+              Left = 0
+              Top = 0
+              Width = 229
+              Height = 72
+              Align = alClient
+              BevelOuter = bvNone
+              TabOrder = 1
+              ExplicitLeft = 119
+              ExplicitTop = -6
+              object Label4: TLabel
+                Left = 8
+                Top = -1
+                Width = 70
+                Height = 13
+                Caption = 'HEX-'#1079#1085#1072#1095#1077#1085#1080#1077
+              end
+              object Label5: TLabel
+                Left = 8
+                Top = 36
+                Width = 71
+                Height = 13
+                Caption = 'DEC-'#1079#1085#1072#1095#1077#1085#1080#1077
+              end
+              object EditHEX: TEdit
+                Left = 8
+                Top = 12
+                Width = 212
+                Height = 21
+                TabOrder = 0
+                TextHint = #1042#1074#1077#1076#1080#1090#1077' '#1079#1085#1072#1095#1072#1085#1080#1077
+                OnChange = EditHEXChange
+              end
+              object EditDEC: TEdit
+                Left = 8
+                Top = 49
+                Width = 212
+                Height = 21
+                TabOrder = 1
+                TextHint = #1042#1074#1077#1076#1080#1090#1077' '#1079#1085#1072#1095#1072#1085#1080#1077
+                OnChange = EditDECChange
+              end
+            end
+          end
+        end
+        object TabSheetMenuView: TTabSheet
+          Caption = #1042#1080#1076
+          ImageIndex = 3
+          TabVisible = False
+          object Shape2: TShape
+            AlignWithMargins = True
+            Left = 206
+            Top = 0
+            Width = 1
+            Height = 85
+            Margins.Left = 5
+            Margins.Top = 0
+            Margins.Right = 5
+            Margins.Bottom = 0
+            Align = alLeft
+            Brush.Color = 15000546
+            Pen.Color = 15000546
+            ExplicitLeft = 372
+            ExplicitTop = 8
+          end
+          object Shape6: TShape
+            AlignWithMargins = True
+            Left = 502
+            Top = 0
+            Width = 1
+            Height = 85
+            Margins.Left = 5
+            Margins.Top = 0
+            Margins.Right = 5
+            Margins.Bottom = 0
+            Align = alLeft
+            Brush.Color = 15000546
+            Pen.Color = 15000546
+            ExplicitLeft = 349
+            ExplicitHeight = 83
+          end
+          object PanelBarView: TPanel
+            Left = 0
+            Top = 0
+            Width = 201
+            Height = 85
+            Margins.Left = 2
+            Margins.Top = 2
+            Margins.Right = 2
+            Margins.Bottom = 2
+            Align = alLeft
+            BevelOuter = bvNone
+            TabOrder = 0
+            object Panel7: TPanel
+              Left = 0
+              Top = 72
+              Width = 201
+              Height = 13
+              Align = alBottom
+              BevelOuter = bvNone
+              Caption = #1056#1077#1076#1072#1082#1090#1086#1088
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clGray
+              Font.Height = -11
+              Font.Name = 'Tahoma'
+              Font.Pitch = fpFixed
+              Font.Style = []
+              ParentFont = False
+              TabOrder = 0
+              ExplicitLeft = -3
+              ExplicitWidth = 473
+            end
+            object Panel8: TPanel
+              Left = 0
+              Top = 0
+              Width = 201
+              Height = 72
+              Align = alClient
+              BevelOuter = bvNone
+              TabOrder = 1
+              ExplicitLeft = -3
+              ExplicitWidth = 513
+              object Panel1: TPanel
+                Left = 0
+                Top = 28
+                Width = 201
+                Height = 28
+                Align = alTop
+                BevelOuter = bvNone
+                TabOrder = 0
+                object Label1: TLabel
+                  AlignWithMargins = True
+                  Left = 3
+                  Top = 0
+                  Width = 105
+                  Height = 28
+                  Margins.Top = 0
+                  Margins.Bottom = 0
+                  Align = alLeft
+                  AutoSize = False
+                  Caption = #1041#1072#1081#1090' '#1074' '#1089#1090#1088#1086#1082#1077
+                  Layout = tlCenter
+                  ExplicitLeft = 0
+                  ExplicitHeight = 25
+                end
+                object SpinEditSize: TlkSpinEdit
+                  AlignWithMargins = True
+                  Left = 114
+                  Top = 0
+                  Width = 84
+                  Height = 28
+                  Margins.Top = 0
+                  Margins.Bottom = 0
+                  Align = alLeft
+                  Font.Charset = DEFAULT_CHARSET
+                  Font.Color = clWindowText
+                  Font.Height = -16
+                  Font.Name = 'Tahoma'
+                  Font.Style = []
+                  MaxValue = 0
+                  MinValue = 0
+                  ParentFont = False
+                  TabOrder = 0
+                  Value = 24
+                  OnChange = SpinEditSizeChange
+                  ExplicitLeft = 49
+                  ExplicitTop = 20
+                  ExplicitHeight = 32
+                end
+              end
+              object Panel12: TPanel
+                Left = 0
+                Top = 0
+                Width = 201
+                Height = 28
+                Align = alTop
+                BevelOuter = bvNone
+                TabOrder = 1
+                object Label3: TLabel
+                  AlignWithMargins = True
+                  Left = 3
+                  Top = 0
+                  Width = 105
+                  Height = 28
+                  Margins.Top = 0
+                  Margins.Bottom = 0
+                  Align = alLeft
+                  AutoSize = False
+                  Caption = #1041#1072#1079#1086#1074#1072#1103' '#1087#1086#1079#1080#1094#1080#1103
+                  Layout = tlCenter
+                  ExplicitLeft = 0
+                  ExplicitHeight = 41
+                end
+                object ComboBoxNumFormat: TComboBox
+                  AlignWithMargins = True
+                  Left = 114
+                  Top = 0
+                  Width = 84
+                  Height = 27
+                  Margins.Top = 0
+                  Margins.Bottom = 0
+                  Align = alLeft
+                  Style = csDropDownList
+                  Font.Charset = DEFAULT_CHARSET
+                  Font.Color = clWindowText
+                  Font.Height = -16
+                  Font.Name = 'Tahoma'
+                  Font.Style = []
+                  ItemIndex = 0
+                  ParentFont = False
+                  TabOrder = 0
+                  Text = 'hex'
+                  OnChange = ComboBoxNumFormatChange
+                  Items.Strings = (
+                    'hex'
+                    'dec'
+                    'oct')
+                  ExplicitLeft = 105
+                end
+              end
+            end
+          end
+          object Panel9: TPanel
+            Left = 212
+            Top = 0
+            Width = 285
+            Height = 85
+            Margins.Left = 2
+            Margins.Top = 2
+            Margins.Right = 2
+            Margins.Bottom = 2
+            Align = alLeft
+            BevelOuter = bvNone
+            TabOrder = 1
+            object Panel10: TPanel
+              Left = 0
+              Top = 72
+              Width = 285
+              Height = 13
+              Align = alBottom
+              BevelOuter = bvNone
+              Caption = #1058#1077#1082#1089#1090#1086#1074#1086#1077' '#1087#1088#1077#1076#1089#1090#1072#1074#1083#1077#1085#1080#1077
+              Font.Charset = DEFAULT_CHARSET
+              Font.Color = clGray
+              Font.Height = -11
+              Font.Name = 'Tahoma'
+              Font.Pitch = fpFixed
+              Font.Style = []
+              ParentFont = False
+              TabOrder = 0
+              ExplicitWidth = 473
+            end
+            object Panel11: TPanel
+              Left = 0
+              Top = 0
+              Width = 285
+              Height = 72
+              Align = alClient
+              BevelOuter = bvNone
+              TabOrder = 1
+              ExplicitLeft = 293
+              ExplicitWidth = 473
+              object Panel2: TPanel
+                Left = 0
+                Top = 0
+                Width = 285
+                Height = 28
+                Align = alTop
+                BevelOuter = bvNone
+                TabOrder = 0
+                ExplicitWidth = 473
+                object Label2: TLabel
+                  AlignWithMargins = True
+                  Left = 3
+                  Top = 0
+                  Width = 94
+                  Height = 28
+                  Margins.Top = 0
+                  Margins.Bottom = 0
+                  Align = alLeft
+                  Caption = #1050#1086#1076#1080#1088#1086#1074#1082#1072' '#1090#1077#1082#1089#1090#1072
+                  Layout = tlCenter
+                  ExplicitLeft = 0
+                  ExplicitHeight = 13
+                end
+                object ComboBoxCodePage: TComboBox
+                  AlignWithMargins = True
+                  Left = 103
+                  Top = 0
+                  Width = 170
+                  Height = 27
+                  Margins.Top = 0
+                  Margins.Bottom = 0
+                  Align = alLeft
+                  Style = csDropDownList
+                  Font.Charset = DEFAULT_CHARSET
+                  Font.Color = clWindowText
+                  Font.Height = -16
+                  Font.Name = 'Tahoma'
+                  Font.Style = []
+                  ItemIndex = 1
+                  ParentFont = False
+                  TabOrder = 0
+                  Text = 'Windows (ANSI)'
+                  OnChange = ComboBoxCodePageChange
+                  Items.Strings = (
+                    'Unicode (UTF8)'
+                    'Windows (ANSI)'
+                    'DOS/IBM (OEM)'
+                    'Macintosh'
+                    'EBCDIC')
                 end
               end
             end
@@ -1007,167 +1295,12 @@ object FormMain: TFormMain
             end
           end
         end
-        object TabSheetMenuView: TTabSheet
-          Caption = #1042#1080#1076
-          ImageIndex = 3
-          TabVisible = False
-          object Shape2: TShape
-            AlignWithMargins = True
-            Left = 478
-            Top = 0
-            Width = 1
-            Height = 85
-            Margins.Left = 5
-            Margins.Top = 0
-            Margins.Right = 5
-            Margins.Bottom = 0
-            Align = alLeft
-            Brush.Color = 15000546
-            Pen.Color = 15000546
-            ExplicitLeft = 349
-            ExplicitHeight = 83
-          end
-          object PanelBarView: TPanel
-            Left = 0
-            Top = 0
-            Width = 473
-            Height = 85
-            Margins.Left = 2
-            Margins.Top = 2
-            Margins.Right = 2
-            Margins.Bottom = 2
-            Align = alLeft
-            BevelOuter = bvNone
-            TabOrder = 0
-            object Panel7: TPanel
-              Left = 0
-              Top = 72
-              Width = 473
-              Height = 13
-              Align = alBottom
-              BevelOuter = bvNone
-              Caption = #1042#1080#1076
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clGray
-              Font.Height = -11
-              Font.Name = 'Tahoma'
-              Font.Pitch = fpFixed
-              Font.Style = []
-              ParentFont = False
-              TabOrder = 0
-              ExplicitWidth = 177
-            end
-            object Panel8: TPanel
-              Left = 0
-              Top = 0
-              Width = 473
-              Height = 72
-              Align = alClient
-              BevelOuter = bvNone
-              TabOrder = 1
-              ExplicitLeft = -3
-              ExplicitWidth = 513
-              object Label1: TLabel
-                AlignWithMargins = True
-                Left = 3
-                Top = 20
-                Width = 40
-                Height = 32
-                Margins.Top = 20
-                Margins.Bottom = 20
-                Align = alLeft
-                Caption = #1064#1080#1088#1080#1085#1072
-                Layout = tlCenter
-                ExplicitTop = 3
-                ExplicitHeight = 13
-              end
-              object Label2: TLabel
-                AlignWithMargins = True
-                Left = 150
-                Top = 20
-                Width = 94
-                Height = 32
-                Margins.Top = 20
-                Margins.Bottom = 20
-                Align = alLeft
-                Caption = #1050#1086#1076#1080#1088#1086#1074#1082#1072' '#1090#1077#1082#1089#1090#1072
-                Layout = tlCenter
-                ExplicitLeft = 139
-                ExplicitHeight = 13
-              end
-              object Shape6: TShape
-                AlignWithMargins = True
-                Left = 141
-                Top = 0
-                Width = 1
-                Height = 72
-                Margins.Left = 5
-                Margins.Top = 0
-                Margins.Right = 5
-                Margins.Bottom = 0
-                Align = alLeft
-                Brush.Color = 15000546
-                Pen.Color = 15000546
-                ExplicitTop = 14
-              end
-              object SpinEditSize: TlkSpinEdit
-                AlignWithMargins = True
-                Left = 49
-                Top = 20
-                Width = 84
-                Height = 32
-                Margins.Top = 20
-                Margins.Bottom = 20
-                Align = alLeft
-                Font.Charset = DEFAULT_CHARSET
-                Font.Color = clWindowText
-                Font.Height = -16
-                Font.Name = 'Tahoma'
-                Font.Style = []
-                MaxValue = 0
-                MinValue = 0
-                ParentFont = False
-                TabOrder = 0
-                Value = 24
-                OnChange = SpinEditSizeChange
-              end
-              object ComboBoxCodePage: TComboBox
-                AlignWithMargins = True
-                Left = 250
-                Top = 20
-                Width = 215
-                Height = 27
-                Margins.Top = 20
-                Margins.Bottom = 20
-                Align = alLeft
-                Style = csDropDownList
-                Font.Charset = DEFAULT_CHARSET
-                Font.Color = clWindowText
-                Font.Height = -16
-                Font.Name = 'Tahoma'
-                Font.Style = []
-                ItemIndex = 1
-                ParentFont = False
-                TabOrder = 1
-                Text = 'Windows (ANSI)'
-                OnChange = ComboBoxCodePageChange
-                Items.Strings = (
-                  'Unicode (UTF8)'
-                  'Windows (ANSI)'
-                  'DOS/IBM (OEM)'
-                  'Macintosh'
-                  'EBCDIC')
-                ExplicitLeft = 239
-              end
-            end
-          end
-        end
       end
     end
   end
   object PanelMenuFile: TPanel
-    Left = 600
-    Top = 134
+    Left = 16
+    Top = 131
     Width = 486
     Height = 480
     Align = alCustom

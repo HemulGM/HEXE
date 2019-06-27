@@ -2,7 +2,8 @@ program HEXE;
 
 uses
   Vcl.Forms,
-  HEXE.Main in 'HEXE.Main.pas' {FormMain};
+  HEXE.Main in 'HEXE.Main.pas' {FormMain},
+  HEXE.Utils in 'HEXE.Utils.pas';
 
 {$R *.res}
 

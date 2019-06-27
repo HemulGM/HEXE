@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Grids, System.UITypes,
   Vcl.ComCtrls, HGM.Controls.SpinEdit, HGM.Popup, Vcl.Buttons, sSpeedButton,
-  HGM.Button, System.ImageList, Vcl.ImgList, PngImageList;
+  HGM.Button, System.ImageList, Vcl.ImgList, PngImageList, HGM.Controls.Labels;
 
 type
   TCodePage = (cpUTF, cpAnsi, cpOEM, cpMac, cpEBCDIC);
@@ -22,7 +22,6 @@ type
     FileOpenDialog: TFileOpenDialog;
     PanelMenu: TPanel;
     PanelMenuNavigate: TPanel;
-    ButtonFlatMenuSearch: TButtonFlat;
     ButtonFlatMenuHelp: TButtonFlat;
     ButtonFlatMenuStart: TButtonFlat;
     ButtonFlatMenuFile: TButtonFlat;
@@ -33,13 +32,7 @@ type
     TabSheetMenuStart: TTabSheet;
     Shape5: TShape;
     PanelBarTasks: TPanel;
-    Shape1: TShape;
     Panel32: TPanel;
-    TabSheetMenuSearch: TTabSheet;
-    Shape23: TShape;
-    PanelBarSerach: TPanel;
-    Panel24: TPanel;
-    Panel30: TPanel;
     TabSheetMenuHelp: TTabSheet;
     Shape24: TShape;
     PanelBarHelp: TPanel;
@@ -72,9 +65,31 @@ type
     ButtonFlatMenuView: TButtonFlat;
     TabSheetMenuView: TTabSheet;
     ImageList32: TImageList;
+    ButtonFlatOpenFile: TButtonFlat;
+    Shape2: TShape;
+    PanelBarView: TPanel;
+    Panel7: TPanel;
+    Panel8: TPanel;
+    Panel1: TPanel;
+    Label1: TLabel;
+    SpinEditSize: TlkSpinEdit;
+    Shape6: TShape;
+    Panel9: TPanel;
+    Panel10: TPanel;
+    Panel11: TPanel;
+    Panel2: TPanel;
+    Label2: TLabel;
+    ComboBoxCodePage: TComboBox;
+    Panel12: TPanel;
+    Label3: TLabel;
+    ComboBoxNumFormat: TComboBox;
+    Shape1: TShape;
+    Shape23: TShape;
+    PanelBarSerach: TPanel;
+    Panel24: TPanel;
+    Panel30: TPanel;
     EditSearch: TEdit;
     ButtonSearch: TButtonFlat;
-    Shape3: TShape;
     PanelBarSearchParam: TPanel;
     Panel5: TPanel;
     Panel6: TPanel;
@@ -85,18 +100,17 @@ type
     Panel4: TPanel;
     RadioButtonStartPos: TRadioButton;
     RadioButtonStartBegin: TRadioButton;
-    ButtonFlatOpenFile: TButtonFlat;
-    EditAddr: TEdit;
-    ButtonFlatGoTo: TButtonFlat;
-    Shape2: TShape;
-    PanelBarView: TPanel;
-    Panel7: TPanel;
-    Panel8: TPanel;
-    SpinEditSize: TlkSpinEdit;
-    ComboBoxCodePage: TComboBox;
-    Label1: TLabel;
-    Label2: TLabel;
-    Shape6: TShape;
+    RadioButtonSearchData: TRadioButton;
+    RadioButtonSearchAddr: TRadioButton;
+    Shape3: TShape;
+    PanelBarTools: TPanel;
+    Panel14: TPanel;
+    Panel15: TPanel;
+    EditHEX: TEdit;
+    Label4: TLabel;
+    EditDEC: TEdit;
+    Label5: TLabel;
+    LinkOpenFile: ThLink;
     procedure FormCreate(Sender: TObject);
     procedure StringGridEditorSelectCell(Sender: TObject; ACol, ARow: Integer;
       var CanSelect: Boolean);
@@ -131,11 +145,12 @@ type
     procedure ButtonFlat17Click(Sender: TObject);
     procedure ButtonFlatMenuStartClick(Sender: TObject);
     procedure ButtonFlatMenuViewClick(Sender: TObject);
-    procedure ButtonFlatMenuSearchClick(Sender: TObject);
     procedure ButtonFlatMenuHelpClick(Sender: TObject);
     procedure ButtonFlatOpenFileClick(Sender: TObject);
     procedure ButtonFlatMenuQuitClick(Sender: TObject);
-    procedure ButtonFlatGoToClick(Sender: TObject);
+    procedure EditHEXChange(Sender: TObject);
+    procedure EditDECChange(Sender: TObject);
+    procedure ComboBoxNumFormatChange(Sender: TObject);
   private
     FFileName: string;
     FGoToByte: Integer;
@@ -148,6 +163,7 @@ type
     MaxLineCount: Integer;
     StartByte: Int64;
     FMenuFilePopup: TFormPopup;
+    FLockChangeEvent: Boolean;
     procedure FreePopup;
     procedure LoadLastItems;
     procedure Navigate(Tab: TTabSheet);
@@ -161,8 +177,9 @@ type
     function FindInFile(Value: string; StartByte: Int64; TypeFind: Byte): Int64;
     procedure GoToAddr(Addr: Int64);
     function GetStrNum(Value: Int64; Nums: Integer): string;
+    procedure SetIsOpenFile(const Value: Boolean);
   public
-
+    property IsOpenFile: Boolean read FIsOpenFile write SetIsOpenFile;
   end;
 
 
@@ -174,7 +191,7 @@ var
 
 implementation
 
-uses Math;
+uses Math, HEXE.Utils;
 
 {$R *.dfm}
 
@@ -207,26 +224,12 @@ begin
   Winapi.Windows.SetFocus(Handle);
 end;
 
-procedure TFormMain.ButtonFlatGoToClick(Sender: TObject);
-var Offset: Int64;
-begin
-  try
-    Offset := StrToInt64('$'+EditAddr.Text);
-  except
-    begin
-      MessageBox(Handle, 'Не верное значение!', 'Ошибка', MB_ICONWARNING or MB_OK);
-      Exit;
-    end;
-  end;
-  GoToAddr(Offset);
-end;
-
 procedure TFormMain.ButtonFlatMenuFileClick(Sender: TObject);
 var
   pt: TPoint;
 begin
   pt := ButtonFlatMenuFile.ClientToScreen(Point(0, 0));
-  FMenuFilePopup := TFormPopup.CreatePopup(Self, PanelMenuFile, FreePopup, pt.X, pt.Y, False, True, False);
+  FMenuFilePopup := TFormPopup.CreatePopup(Self, PanelMenuFile, FreePopup, pt.X, pt.Y, [psAnimate]);
   LoadLastItems;
 end;
 
@@ -238,11 +241,6 @@ end;
 procedure TFormMain.ButtonFlatMenuQuitClick(Sender: TObject);
 begin
   Application.Terminate;
-end;
-
-procedure TFormMain.ButtonFlatMenuSearchClick(Sender: TObject);
-begin
-  Navigate(TabSheetMenuSearch);
 end;
 
 procedure TFormMain.ButtonFlatMenuStartClick(Sender: TObject);
@@ -262,19 +260,38 @@ begin
 end;
 
 procedure TFormMain.ButtonSearchClick(Sender: TObject);
-var Start: Integer;
-    Kind: Byte;
-    Addr: Int64;
+var
+  Start: Integer;
+  Kind: Byte;
+  Addr: Int64;
 begin
-  if RadioButtonStartPos.Checked then Start := StartByte
-  else Start := 0;
-  if RadioButtonNum.Checked then Kind := 1
+  Addr := -1;
+  if RadioButtonSearchAddr.Checked then
+  begin
+    try
+      Addr := StrToInt64('$' + EditSearch.Text);
+    except
+      begin
+        MessageBox(Handle, 'Не верное значение!', 'Ошибка', MB_ICONWARNING or MB_OK);
+        Exit;
+      end;
+    end;
+  end
   else
-  if RadioButtonStr.Checked then Kind := 2
-  else
-  if RadioButtonStrIgnor.Checked then Kind := 3;
+  begin
+    if RadioButtonStartPos.Checked then
+      Start := StartByte
+    else
+      Start := 0;
+    if RadioButtonNum.Checked then
+      Kind := 1
+    else if RadioButtonStr.Checked then
+      Kind := 2
+    else if RadioButtonStrIgnor.Checked then
+      Kind := 3;
 
-  Addr := FindInFile(EditSearch.Text, Start, Kind);
+    Addr := FindInFile(EditSearch.Text, Start, Kind);
+  end;
   if Addr >= 0 then
   begin
     GoToAddr(Addr);
@@ -287,10 +304,52 @@ begin
   UpdateView;
 end;
 
+procedure TFormMain.ComboBoxNumFormatChange(Sender: TObject);
+begin
+  FNumFormat := TNumFormat(ComboBoxNumFormat.ItemIndex);
+  UpdateView;
+end;
+
+procedure TFormMain.EditDECChange(Sender: TObject);
+begin
+  if FLockChangeEvent then Exit;
+
+  if EditDEC.Text = '' then
+  begin
+    EditHEX.Text := '';
+    Exit;
+  end;
+  FLockChangeEvent := True;
+  try
+    EditHEX.Text := IntToHex(StrToInt(EditDEC.Text), 2);
+  except
+    EditHEX.Text := '';
+  end;
+  FLockChangeEvent := False;
+end;
+
+procedure TFormMain.EditHEXChange(Sender: TObject);
+begin
+  if FLockChangeEvent then Exit;
+
+  if EditHEX.Text = '' then
+  begin
+    EditDEC.Text := '';
+    Exit;
+  end;
+  FLockChangeEvent := True;
+  try
+    EditDEC.Text := StrToInt('$'+EditHEX.Text).ToString;
+  except
+    EditDEC.Text := '';
+  end;
+  FLockChangeEvent := False;
+end;
+
 procedure TFormMain.FOpenFile(FileName: string);
 begin
   FFileName := FileName;
-  FIsOpenFile := True;
+  IsOpenFile := True;
   Caption := 'HEXE - ' + FileName;
   fSize := FileSize(FileName);
   StartByte := 0;
@@ -299,12 +358,14 @@ end;
 
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
-  FIsOpenFile := False;
+  IsOpenFile := False;
+  FLockChangeEvent := False;
   FGoTo := False;
   FColCount := 24;
   FGoToByte := 0;
-  FNumFormat := nfDEC;
+  FNumFormat := nfHEX;
   FCodePage := cpAnsi;
+  LinkOpenFile.Left := ClientWidth div 2 - LinkOpenFile.Width div 2;
   StringGridEditor.ColWidths[0] := 80;
   StringGridEditor.RowHeights[0] := 30;
   Navigate(TabSheetMenuStart);
@@ -356,7 +417,7 @@ begin
   case FNumFormat of
     nfHEX: Result := IntToHex(Value, 2);
     nfDEC: Result := IntToStr(Value);
-    nfOCT: ;
+    nfOCT: Result := DecToOct(Value);
   end;
   while Result.Length < Nums do Result := '0' + Result;
 end;
@@ -413,7 +474,6 @@ begin
   PageControlMenu.ActivePage := Tab;
   SetMenuButtonActive(ButtonFlatMenuStart, PageControlMenu.ActivePage = TabSheetMenuStart);
   SetMenuButtonActive(ButtonFlatMenuView, PageControlMenu.ActivePage = TabSheetMenuView);
-  SetMenuButtonActive(ButtonFlatMenuSearch, PageControlMenu.ActivePage = TabSheetMenuSearch);
   SetMenuButtonActive(ButtonFlatMenuHelp, PageControlMenu.ActivePage = TabSheetMenuHelp);
 end;
 
@@ -427,6 +487,16 @@ var
 begin
   if not FIsOpenFile then Exit;
 
+  try
+    Fs := TFileStream.Create(FFileName, fmOpenRead);
+  except
+    on E:Exception do
+    begin
+      MessageBox(Handle, PChar('Невозможно открыть файл.'#13#10+E.Message), 'Ошибка', MB_ICONERROR or MB_OK);
+      Exit;
+    end;
+  end;
+
   MaxBytesCount := MaxLineCount * FColCount;
   if fSize - StartByte >= MaxBytesCount then
     BytesCount := MaxBytesCount
@@ -436,7 +506,6 @@ begin
   StringGridEditor.Perform(WM_SETREDRAW, 0, 0);
   MemoChars.Lines.BeginUpdate;
   MemoChars.Lines.Clear;
-  Fs := TFileStream.Create(FFileName, fmOpenRead);
   Fs.Seek(StartByte, soBeginning);
   Offset := Fs.Position;
   Fs.Read(Ar, BytesCount);
@@ -487,6 +556,7 @@ begin
 
   if FGoTo then
   begin
+    StringGridEditor.Row := 1;
     StringGridEditor.Col := FGoToByte + 1;
   end;
 
@@ -496,6 +566,9 @@ end;
 procedure TFormMain.ScrollBarEditorScroll(Sender: TObject; ScrollCode: TScrollCode;
   var ScrollPos: Integer);
 begin
+  if not FIsOpenFile then Exit;
+  if fSize = 0 then Exit;
+
   case ScrollCode of
     TScrollCode.scLineUp: StartByte := Max(0, StartByte - FColCount);
     TScrollCode.scLineDown: StartByte := Min(fSize - FColCount, StartByte + FColCount);
@@ -577,6 +650,12 @@ begin
   ScrollPos := ScrollBarEditor.Position;
   ScrollBarEditorScroll(nil, Scroll, ScrollPos);
   ScrollBarEditor.Position := ScrollPos;
+end;
+
+procedure TFormMain.SetIsOpenFile(const Value: Boolean);
+begin
+  FIsOpenFile := Value;
+  PanelEditor.Visible := FIsOpenFile;
 end;
 
 procedure TFormMain.SpinEditSizeChange(Sender: TObject);
@@ -662,6 +741,8 @@ var
   FS: TFileStream;
   B: Byte;
 begin
+  if StringGridEditor.Cells[ACol, ARow] = Value then Exit;
+
   if Value.Length < 2 then Exit;
 
   try
