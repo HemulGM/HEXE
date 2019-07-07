@@ -5,8 +5,9 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Grids, System.UITypes,
-  Vcl.ComCtrls, HGM.Controls.SpinEdit, HGM.Popup, Vcl.Buttons, sSpeedButton,
-  HGM.Button, System.ImageList, Vcl.ImgList, PngImageList, HGM.Controls.Labels;
+  Vcl.ComCtrls, HGM.Controls.SpinEdit, HGM.Popup, Vcl.Buttons, sSpeedButton, HGM.Common.Settings,
+  HGM.Button, System.ImageList, Vcl.ImgList, PngImageList, HGM.Controls.Labels,
+  Vcl.Imaging.pngimage, Vcl.Menus, acPNG;
 
 type
   TCodePage = (cpUTF, cpAnsi, cpOEM, cpMac, cpEBCDIC);
@@ -36,32 +37,27 @@ type
     TabSheetMenuHelp: TTabSheet;
     Shape24: TShape;
     PanelBarHelp: TPanel;
-    SpeedButtonMenuInfo: TsSpeedButton;
-    Shape20: TShape;
     Panel62: TPanel;
-    Panel63: TPanel;
-    SpeedButtonMenuFutures: TsSpeedButton;
-    SpeedButtonMenuAutor: TsSpeedButton;
     PanelMenuFile: TPanel;
     Shape25: TShape;
     Shape26: TShape;
     Shape32: TShape;
-    Panel65: TPanel;
+    PanelMenuFileActions: TPanel;
     Shape21: TShape;
     Shape30: TShape;
-    ButtonFlatOpen: TButtonFlat;
+    ButtonFlatMenuOpen: TButtonFlat;
     ButtonFlatMenuQuit: TButtonFlat;
-    Panel66: TPanel;
+    PanelMenuFileLastFiles: TPanel;
     Shape31: TShape;
     Panel69: TPanel;
     ListViewRecent: TListView;
-    Panel67: TPanel;
+    PanelMenuFileStatus: TPanel;
     Shape22: TShape;
     Shape33: TShape;
     Shape35: TShape;
-    Panel68: TPanel;
+    PanelMenuFileNav: TPanel;
     Shape34: TShape;
-    ButtonFlat17: TButtonFlat;
+    ButtonFlatMenuFileClose: TButtonFlat;
     ButtonFlatMenuView: TButtonFlat;
     TabSheetMenuView: TTabSheet;
     ImageList32: TImageList;
@@ -74,7 +70,7 @@ type
     Label1: TLabel;
     SpinEditSize: TlkSpinEdit;
     Shape6: TShape;
-    Panel9: TPanel;
+    PanelBarTextView: TPanel;
     Panel10: TPanel;
     Panel11: TPanel;
     Panel2: TPanel;
@@ -111,6 +107,20 @@ type
     EditDEC: TEdit;
     Label5: TLabel;
     LinkOpenFile: ThLink;
+    PanelStatusBar: TPanel;
+    ButtonFlatStatus: TButtonFlat;
+    ButtonFlatAddr: TButtonFlat;
+    Shape7: TShape;
+    ButtonFlatRecent: TButtonFlat;
+    PopupMenuRecent: TPopupMenu;
+    SpeedButtonMenuInfo: TButtonFlat;
+    PanelAbout: TPanel;
+    Label6: TLabel;
+    Label7: TLabel;
+    LinkGit: ThLink;
+    LinkSite: ThLink;
+    Label8: TLabel;
+    Image1: TImage;
     procedure FormCreate(Sender: TObject);
     procedure StringGridEditorSelectCell(Sender: TObject; ACol, ARow: Integer;
       var CanSelect: Boolean);
@@ -128,8 +138,6 @@ type
     procedure StringGridEditorDrawCell(Sender: TObject; ACol, ARow: Integer;
       Rect: TRect; State: TGridDrawState);
     procedure MemoCharsClick(Sender: TObject);
-    procedure MemoCharsKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
     procedure MemoCharsKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure MemoCharsMouseWheelDown(Sender: TObject; Shift: TShiftState;
@@ -142,7 +150,7 @@ type
     procedure ButtonSearchClick(Sender: TObject);
     procedure SpinEditSizeChange(Sender: TObject);
     procedure ButtonFlatMenuFileClick(Sender: TObject);
-    procedure ButtonFlat17Click(Sender: TObject);
+    procedure ButtonFlatMenuFileCloseClick(Sender: TObject);
     procedure ButtonFlatMenuStartClick(Sender: TObject);
     procedure ButtonFlatMenuViewClick(Sender: TObject);
     procedure ButtonFlatMenuHelpClick(Sender: TObject);
@@ -151,6 +159,12 @@ type
     procedure EditHEXChange(Sender: TObject);
     procedure EditDECChange(Sender: TObject);
     procedure ComboBoxNumFormatChange(Sender: TObject);
+    procedure ListViewRecentClick(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure ButtonFlatRecentClick(Sender: TObject);
+    procedure MenuItemRecentClick(Sender: TObject);
+    procedure SpeedButtonMenuInfoClick(Sender: TObject);
+    procedure LinkSiteClick(Sender: TObject);
   private
     FFileName: string;
     FGoToByte: Integer;
@@ -164,34 +178,41 @@ type
     StartByte: Int64;
     FMenuFilePopup: TFormPopup;
     FLockChangeEvent: Boolean;
+    FLastItems: TStringList;
+    FSettings: TSettingsReg;
     procedure FreePopup;
-    procedure LoadLastItems;
+    procedure LoadLastItems;  
+    procedure UpdateLastItems;  
+    procedure SaveLastItems;
     procedure Navigate(Tab: TTabSheet);
     function GetHEXChar(Value: Byte): string;
     procedure FOpenFile(FileName: string);
     procedure UpdateParams;
     procedure UpdateView;
     procedure ScrollGrid(Scroll: TScrollCode);
-    procedure UpdateMemoCursor;
+    procedure UpdateMemoCursor(C, R: Integer);
     procedure RepaintGridOffset;
     function FindInFile(Value: string; StartByte: Int64; TypeFind: Byte): Int64;
     procedure GoToAddr(Addr: Int64);
     function GetStrNum(Value: Int64; Nums: Integer): string;
     procedure SetIsOpenFile(const Value: Boolean);
+    function GetCurrentAddress(C, R: Integer): Int64;
+    procedure OnChangeCurrentAddress(C, R: Integer);
   public
     property IsOpenFile: Boolean read FIsOpenFile write SetIsOpenFile;
   end;
-
+  
+const
+  FLastCount: Integer = 20;
 
 var
   FormMain: TFormMain;
-
 
   function GetFileSizeEx(hFile: THandle; var FileSize: TLargeInteger): BOOL; stdcall; external kernel32 name 'GetFileSizeEx';
 
 implementation
 
-uses Math, HEXE.Utils;
+uses Math, HEXE.Utils, ShellApi;
 
 {$R *.dfm}
 
@@ -214,12 +235,66 @@ begin
   FGoTo := False;
 end;
 
-procedure TFormMain.LoadLastItems;
+procedure TFormMain.LinkSiteClick(Sender: TObject);
 begin
-  //
+  ShellExecute(Handle, 'open', PChar((Sender as ThLink).Caption), nil, nil, SW_NORMAL);
 end;
 
-procedure TFormMain.ButtonFlat17Click(Sender: TObject);
+procedure TFormMain.ListViewRecentClick(Sender: TObject);
+begin
+  if Assigned(FMenuFilePopup) then
+    FMenuFilePopup.Close;
+  if Assigned(ListViewRecent.Selected) then
+    FOpenFile(ListViewRecent.Selected.SubItems[0]);
+end;
+
+procedure TFormMain.LoadLastItems;
+var
+  i: Integer;
+  s: string;
+begin
+  FLastItems.BeginUpdate;
+  FLastItems.Clear;
+  for i := 0 to FLastCount-1 do
+  begin  
+    s := FSettings.GetStr('Recents', 'File'+i.ToString, '');
+    if s <> '' then 
+    begin
+      FLastItems.Add(s);
+    end;
+  end;  
+  FLastItems.EndUpdate;  
+  UpdateLastItems;
+end;
+
+procedure TFormMain.UpdateLastItems;
+var
+  i: Integer;
+begin
+  ListViewRecent.Items.BeginUpdate;
+  ListViewRecent.Items.Clear;
+  for i := 0 to FLastItems.Count-1 do
+  begin
+    with ListViewRecent.Items.Add do
+    begin
+      Caption := FLastItems[i];
+      SubItems.Add(FLastItems[i]);
+    end;
+  end;
+  ListViewRecent.Items.EndUpdate;
+end;
+
+procedure TFormMain.SaveLastItems;
+var
+  i: Integer;
+begin
+  for i := 0 to Min(FLastItems.Count-1, FLastCount-1) do
+  begin
+    FSettings.SetStr('Recents', 'File'+i.ToString, FLastItems[i]);
+  end;
+end;
+
+procedure TFormMain.ButtonFlatMenuFileCloseClick(Sender: TObject);
 begin
   Winapi.Windows.SetFocus(Handle);
 end;
@@ -230,7 +305,6 @@ var
 begin
   pt := ButtonFlatMenuFile.ClientToScreen(Point(0, 0));
   FMenuFilePopup := TFormPopup.CreatePopup(Self, PanelMenuFile, FreePopup, pt.X, pt.Y, [psAnimate]);
-  LoadLastItems;
 end;
 
 procedure TFormMain.ButtonFlatMenuHelpClick(Sender: TObject);
@@ -257,6 +331,25 @@ procedure TFormMain.ButtonFlatOpenFileClick(Sender: TObject);
 begin
   if FileOpenDialog.Execute then
     FOpenFile(FileOpenDialog.FileName);
+end;
+
+procedure TFormMain.ButtonFlatRecentClick(Sender: TObject);
+var
+  i: Integer;
+  Item: TMenuItem;
+  Pt: TPoint;
+begin
+  PopupMenuRecent.Items.Clear;
+  for i := 0 to FLastItems.Count-1 do
+  begin
+    Item := TMenuItem.Create(PopupMenuRecent);
+    Item.Caption := FLastItems[i];
+    Item.OnClick := MenuItemRecentClick;
+    Item.Tag := i;
+    PopupMenuRecent.Items.Add(Item);
+  end;
+  Pt := ButtonFlatOpenFile.ClientToScreen(Point(0, 0));
+  PopupMenuRecent.Popup(Pt.X, Pt.Y+ButtonFlatOpenFile.Height);
 end;
 
 procedure TFormMain.ButtonSearchClick(Sender: TObject);
@@ -347,8 +440,17 @@ begin
 end;
 
 procedure TFormMain.FOpenFile(FileName: string);
+var i: Integer;
 begin
   FFileName := FileName;
+  
+  repeat
+   i := FLastItems.IndexOf(FFileName);
+   if i >= 0 then FLastItems.Delete(i);   
+  until i < 0;
+  FLastItems.Insert(0, FFileName);
+  UpdateLastItems;
+  
   IsOpenFile := True;
   Caption := 'HEXE - ' + FileName;
   fSize := FileSize(FileName);
@@ -358,6 +460,8 @@ end;
 
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
+  FLastItems := TStringList.Create;
+  FSettings := TSettingsReg.Create(rrHKCU, 'Software\HEXE');
   IsOpenFile := False;
   FLockChangeEvent := False;
   FGoTo := False;
@@ -369,6 +473,15 @@ begin
   StringGridEditor.ColWidths[0] := 80;
   StringGridEditor.RowHeights[0] := 30;
   Navigate(TabSheetMenuStart);
+
+  LoadLastItems;
+end;
+
+procedure TFormMain.FormDestroy(Sender: TObject);
+begin
+  SaveLastItems;
+  FSettings.Free;
+  FLastItems.Free;
 end;
 
 procedure TFormMain.FormResize(Sender: TObject);
@@ -432,12 +545,6 @@ begin
   //MemoChars.SelLength := 1;
 end;
 
-procedure TFormMain.MemoCharsKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  MemoCharsClick(nil);
-end;
-
 procedure TFormMain.MemoCharsKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
@@ -456,6 +563,11 @@ procedure TFormMain.MemoCharsMouseWheelUp(Sender: TObject; Shift: TShiftState;
 begin
   ScrollGrid(scLineUp);
   Handled := True;
+end;
+
+procedure TFormMain.MenuItemRecentClick(Sender: TObject);
+begin 
+  FOpenFile(FLastItems[(Sender as TMenuItem).Tag]);
 end;
 
 procedure TFormMain.Navigate(Tab: TTabSheet);
@@ -560,7 +672,7 @@ begin
     StringGridEditor.Col := FGoToByte + 1;
   end;
 
-  UpdateMemoCursor;
+  OnChangeCurrentAddress(StringGridEditor.Col, StringGridEditor.Row);
 end;
 
 procedure TFormMain.ScrollBarEditorScroll(Sender: TObject; ScrollCode: TScrollCode;
@@ -640,7 +752,7 @@ procedure TFormMain.StringGridEditorFixedCellClick(Sender: TObject; ACol,
   ARow: Integer);
 begin
   StringGridEditor.Selection := TGridRect(Rect(1, ARow, StringGridEditor.ColCount-1, ARow));
-  UpdateMemoCursor;
+  UpdateMemoCursor(ACol, ARow);
   StringGridEditor.Repaint;
 end;
 
@@ -658,6 +770,11 @@ begin
   PanelEditor.Visible := FIsOpenFile;
 end;
 
+procedure TFormMain.SpeedButtonMenuInfoClick(Sender: TObject);
+begin
+  TFormPopup.CreatePopup(Self, PanelAbout, nil, Left + Width div 2 - PanelAbout.Width div 2, Top + Height div 2 - PanelAbout.Height div 2, [psAnimate, psShadow]);
+end;
+
 procedure TFormMain.SpinEditSizeChange(Sender: TObject);
 begin
   FColCount := SpinEditSize.Value;
@@ -668,8 +785,8 @@ procedure TFormMain.StringGridEditorKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   case Key of
-    VK_DOWN: if StringGridEditor.Row = StringGridEditor.RowCount-1 then ScrollGrid(scLineDown);
-    VK_UP: if StringGridEditor.Row = 1 then ScrollGrid(scLineUp);
+    VK_DOWN: if StringGridEditor.Row = StringGridEditor.RowCount-1 then begin Key := 0; ScrollGrid(scLineDown); end;
+    VK_UP: if StringGridEditor.Row = 1 then begin Key := 0; ScrollGrid(scLineUp); end;
     VK_NEXT: begin Key := 0; ScrollGrid(scPageDown); end;
     VK_PRIOR: begin Key := 0; ScrollGrid(scPageUp); end;
     VK_RIGHT: if StringGridEditor.Col = StringGridEditor.ColCount-1 then
@@ -701,11 +818,11 @@ begin
   Handled := True;
 end;
 
-procedure TFormMain.UpdateMemoCursor;
+procedure TFormMain.UpdateMemoCursor(C, R: Integer);
 begin
-  if StringGridEditor.Col = 0 then Exit;
-  if StringGridEditor.Row = 0 then Exit;
-  MemoChars.SelStart := ((StringGridEditor.Row-1) * FColCount + (StringGridEditor.Row-1)) + StringGridEditor.Col - 1;
+  if C = 0 then Exit;
+  if R = 0 then Exit;
+  MemoChars.SelStart := ((R-1) * FColCount + (R-1)) + C - 1;
   MemoChars.SelLength := 1;
 end;
 
@@ -719,6 +836,19 @@ begin
   end;
 end;
 
+function TFormMain.GetCurrentAddress;
+begin                  
+  if (C = 0) or (R = 0) then Exit(-1);
+  Result := StartByte + ((R-1) * FColCount + C-1);
+end;
+
+procedure TFormMain.OnChangeCurrentAddress(C, R: Integer);
+begin
+  ButtonFlatAddr.Caption := GetStrNum(GetCurrentAddress(C, R), 2);  
+  if (C = 0) or (R = 0) then Exit;
+  UpdateMemoCursor(C, R);
+end;
+
 procedure TFormMain.StringGridEditorSelectCell(Sender: TObject; ACol,
   ARow: Integer; var CanSelect: Boolean);
 begin
@@ -727,11 +857,8 @@ begin
     CanSelect := False;
     Exit;
   end;
-
-  if ACol = 0 then Exit;
-  if ARow = 0 then Exit;
-  MemoChars.SelStart := ((ARow-1) * FColCount + (ARow-1)) + ACol - 1;
-  MemoChars.SelLength := 1;
+  
+  OnChangeCurrentAddress(ACol, ARow);
   RepaintGridOffset;
 end;
 
@@ -756,7 +883,7 @@ begin
 
   if MessageBox(Handle, 'Изменить значение?', 'Подтверждение', MB_ICONWARNING or MB_YESNO or MB_DEFBUTTON2) <> ID_YES then Exit;
   FS := TFileStream.Create(FFileName, fmOpenWrite);
-  FS.Seek(StartByte + ((ARow-1) * FColCount + ACol-1), soBeginning);
+  FS.Seek(GetCurrentAddress(ACol, ARow), soBeginning);
   FS.Write(B, 1);
   FS.Free;
   UpdateView;
